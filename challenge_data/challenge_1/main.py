@@ -1,4 +1,6 @@
 import random
+import pandas as pd
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
 def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwargs):
@@ -41,16 +43,20 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
         }
     """
     print(kwargs["submission_metadata"])
+
+    test_set = pd.read_csv(test_annotation_file)
+    user_set = pd.read_csv(user_submission_file)
+
     output = {}
     if phase_codename == "dev":
         print("Evaluating for Dev Phase")
         output["result"] = [
             {
                 "train_split": {
-                    "Metric1": random.randint(0, 99),
-                    "Metric2": random.randint(0, 99),
-                    "Metric3": random.randint(0, 99),
-                    "Total": random.randint(0, 99),
+                    "Accuracy": accuracy_score(test_set['label'], user_set['label']),
+                    "Precision": precision_score(test_set['label'], user_set['label']),
+                    "Recall": recall_score(test_set['label'], user_set['label']),
+                    "F1-Score": f1_score(test_set['label'], user_set['label']),
                 }
             }
         ]
@@ -62,18 +68,18 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
         output["result"] = [
             {
                 "train_split": {
-                    "Metric1": random.randint(0, 99),
-                    "Metric2": random.randint(0, 99),
-                    "Metric3": random.randint(0, 99),
-                    "Total": random.randint(0, 99),
+                    "Accuracy": accuracy_score(test_set['label'], user_set['label']),
+                    "Precision": precision_score(test_set['label'], user_set['label']),
+                    "Recall": recall_score(test_set['label'], user_set['label']),
+                    "F1-Score": f1_score(test_set['label'], user_set['label']),
                 }
             },
             {
                 "test_split": {
-                    "Metric1": random.randint(0, 99),
-                    "Metric2": random.randint(0, 99),
-                    "Metric3": random.randint(0, 99),
-                    "Total": random.randint(0, 99),
+                    "Accuracy": accuracy_score(test_set['label'], user_set['label']),
+                    "Precision": precision_score(test_set['label'], user_set['label']),
+                    "Recall": recall_score(test_set['label'], user_set['label']),
+                    "F1-Score": f1_score(test_set['label'], user_set['label']),
                 }
             },
         ]
