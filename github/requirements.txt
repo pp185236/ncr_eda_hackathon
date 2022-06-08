@@ -1,2 +1,5 @@
 PyGithub===1.53
 requests==2.24.0
+pandas
+numpy
+sklearn
