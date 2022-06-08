@@ -45,42 +45,80 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
     test_set = pd.read_csv(test_annotation_file)
     user_set = pd.read_csv(user_submission_file)
 
+    combined_set = pd.merge(test_set, user_set, how='inner', on='opportunity_nbr')
+
+
     output = {}
     if phase_codename == "dev":
-        print("Evaluating for Dev Phase")
-        output["result"] = [
-            {
-                "train_split": {
-                    "Accuracy": accuracy_score(test_set['label'], user_set['label']),
-                    "Precision": precision_score(test_set['label'], user_set['label']),
-                    "Recall": recall_score(test_set['label'], user_set['label']),
-                    "F1-Score": f1_score(test_set['label'], user_set['label']),
+        if (combined_set.shape[0] != test_set.shape[0] or combined_set.shape[0] != user_set.shape[0]):
+            print("Not all required opportunity_nbr's were presented in the user uploaded dataset.")
+            output["result"] = [
+                {
+                    "train_split": {
+                        "Accuracy": 0.0,
+                        "Precision": 0.0,
+                        "Recall": 0.0,
+                        "F1-Score": 0.0,
+                    }
                 }
-            }
-        ]
+            ]
+
+        else:
+            print("Evaluating for Dev Phase")
+            output["result"] = [
+                {
+                    "train_split": {
+                        "Accuracy": accuracy_score(combined_set['true_label'], combined_set['label']),
+                        "Precision": precision_score(combined_set['true_label'], combined_set['label']),
+                        "Recall": recall_score(combined_set['true_label'], user_set['label']),
+                        "F1-Score": f1_score(combined_set['true_label'], combined_set['label']),
+                    }
+                }
+            ]
         # To display the results in the result file
         output["submission_result"] = output["result"][0]["train_split"]
         print("Completed evaluation for Dev Phase")
     elif phase_codename == "test":
-        print("Evaluating for Test Phase")
-        output["result"] = [
-            {
-                "train_split": {
-                    "Accuracy": accuracy_score(test_set['label'], user_set['label']),
-                    "Precision": precision_score(test_set['label'], user_set['label']),
-                    "Recall": recall_score(test_set['label'], user_set['label']),
-                    "F1-Score": f1_score(test_set['label'], user_set['label']),
-                }
-            },
-            {
-                "test_split": {
-                    "Accuracy": accuracy_score(test_set['label'], user_set['label']),
-                    "Precision": precision_score(test_set['label'], user_set['label']),
-                    "Recall": recall_score(test_set['label'], user_set['label']),
-                    "F1-Score": f1_score(test_set['label'], user_set['label']),
-                }
-            },
-        ]
+        if (combined_set.shape[0] != test_set.shape[0] or combined_set.shape[0] != user_set.shape[0]):
+            print("Not all required opportunity_nbr's were presented in the user uploaded dataset.")
+            output["result"] = [
+                {
+                    "train_split": {
+                        "Accuracy": 0.0,
+                        "Precision": 0.0,
+                        "Recall": 0.0,
+                        "F1-Score": 0.0,
+                    }
+                },
+                {
+                    "test_split": {
+                        "Accuracy": 0.0,
+                        "Precision": 0.0,
+                        "Recall": 0.0,
+                        "F1-Score": 0.0,
+                    }
+                },
+            ]
+        else:
+            print("Evaluating for Test Phase")
+            output["result"] = [
+                {
+                    "train_split": {
+                        "Accuracy": accuracy_score(combined_set['true_label'], combined_set['label']),
+                        "Precision": precision_score(combined_set['true_label'], combined_set['label']),
+                        "Recall": recall_score(combined_set['true_label'], combined_set['label']),
+                        "F1-Score": f1_score(combined_set['true_label'], combined_set['label']),
+                    }
+                },
+                {
+                    "test_split": {
+                        "Accuracy": accuracy_score(combined_set['true_label'], combined_set['label']),
+                        "Precision": precision_score(combined_set['true_label'], combined_set['label']),
+                        "Recall": recall_score(combined_set['true_label'], combined_set['label']),
+                        "F1-Score": f1_score(combined_set['true_label'], combined_set['label']),
+                    }
+                },
+            ]
         # To display the results in the result file
         output["submission_result"] = output["result"][0]
         print("Completed evaluation for Test Phase")
