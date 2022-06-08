@@ -5,7 +5,7 @@ short_description: Internal Data Science Challenge organized by the Enterprise D
 description: templates/description.html
 evaluation_details: templates/evaluation_details.html
 terms_and_conditions: templates/terms_and_conditions.html
-image: logo.jpg
+image: ncr_data_science_logo.png
 submission_guidelines: templates/submission_guidelines.html
 leaderboard_description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras egestas a libero nec sagittis.
 evaluation_script: evaluation_script.zip
